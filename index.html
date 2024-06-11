@@ -1,14 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="shortcut icon" href="https://placekitten.com/96/139" type="image/x-icon">
-    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+
+        .container, .container-one, .container-two {
+            width: 100%;
+            height: 110vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .dog {
+            width: 200px;
+            height: 200px;
+            background-image: url('https://illustrators.ru/uploads/product/image/16836/70ACAC49-0508-44E6-921F-BE5135F30901.jpeg');
+            background-size: cover;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .points {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 100px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 100px;
+            gap: 20px;
+        }
+
+        .button-one, .button-two, .button-three {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button-one:hover, .button-two:hover, .button-three:hover {
+            background-color: #3e8e41;
+        }
+
+        @media (max-width: 979px) {
+            body {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+        }
+    </style>
 </head>
 <body>
+<div class="container">
+    <div class="points" id="points">0 points</div>
+    <div class="dog" id="dog" onclick="addPoints()"></div>
+    <div class="buttons">
+        <button class="button-one">Закрити вікно</button>
+        <button class="button-two">Завдання</button>
+        <button class="button-three">Реферали</button>
+    </div>
+</div>
+<div class="container-one">
+    <button class="button-confirm">Confirm task</button>
+    <div class="empty1"><h1>Hello World</h1></div>
+    <div class="empty1"></div>
+    <div class="empty1"></div>
+    <div class="buttons">
+        <button class="button-one">Закрити вікно</button>
+        <button class="button-two">Завдання</button>
+        <button class="button-three">Реферали</button>
+    </div>
+</div>
+<div class="container-two">
+    <div class="empty1"><h1>Hello World2</h1></div>
+    <div class="empty1"></div>
+    <div class="empty1"></div>
+    <div class="buttons">
+        <button class="button-one">Закрити вікно</button>
+        <button class="button-two">Завдання</button>
+        <button class="button-three">Реферали</button>
+    </div>
+</div>
+<script>
+    let points = 0;
 
+    function addPoints() {
+        points++;
+        document.getElementById('points').innerHTML = points + ' points';
+    }
+
+    const buttonsOne = document.querySelectorAll(".button-one");
+    const buttonsTwo = document.querySelectorAll(".button-two");
+    const buttonsThree = document.querySelectorAll(".button-three");
+    const container = document.querySelector(".container");
+    const containerOne = document.querySelector(".container-one");
+    const containerTwo = document.querySelector(".container-two");
+    const buttonConfirm = document.querySelector(".button-confirm");
+
+    buttonsOne.forEach(button => {
+        button.addEventListener("click", () => {
+            container.style.display = "flex";
+            containerOne.style.display = "none";
+            containerTwo.style.display = "none";
+        });
+    });
+
+    buttonsTwo.forEach(button => {
+        button.addEventListener("click", () => {
+            container.style.display = "none";
+            containerOne.style.display = "flex";
+            containerTwo.style.display = "none";
+        });
+    });
+
+    buttonsThree.forEach(button => {
+        button.addEventListener("click", () => {
+            containerTwo.style.display = "flex";
+            container.style.display = "none";
+            containerOne.style.display = "none";
+        });
+    });
+
+    async function checkSubscription(chat_id, user_id) {
+        try {
+            const response = await fetch('http://yourserver.com/check-subscription', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ chat_id, user_id })
+            });
+
+            const result = await response.json();
+            return result.subscribed;
+        } catch (error) {
+            console.error('Error checking subscription:', error);
+            return false;
+        }
+    }
+
+    buttonConfirm.addEventListener("click", async () => {
+        const chat_id = 'YOUR_CHANNEL_ID';
+        const user_id = 'USER_ID_FROM_YOUR_CONTEXT'; // Replace with actual user ID
+
+        const isSubscribed = await checkSubscription(chat_id, user_id);
+
+        if (isSubscribed) {
+            alert('You are subscribed and can proceed!');
+            // Allow user to proceed
+        } else {
+            alert('You are not subscribed. Please subscribe to the channel first.');
+            // Do not allow user to proceed
+        }
+    });
+</script>
 </body>
 </html>
